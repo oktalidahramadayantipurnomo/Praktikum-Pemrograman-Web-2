@@ -1,0 +1,98 @@
+<?php
+/**
+ * Fungsi untuk menghasilkan form penambahan/pengubahan data
+ * @param string $root parameter menu
+ * @param integer $id nim mahasiswa
+ */
+function data_editor($root, $id = 0) {
+    global $cnn; // pastikan $conn dari koneksi.php sudah didefinisikan
+
+    $view = true;
+
+    // Jika form disubmit
+    if (isset($_POST['nim']) && $_POST['nim']) {
+        $nim = mysqli_real_escape_string($cnn, $_POST['nim']);
+        $nama = mysqli_real_escape_string($cnn, $_POST['nama']);
+        $alamat = mysqli_real_escape_string($cnn, $_POST['alamat']);
+
+        // Jika tidak ada ID → INSERT
+        if (!$id) {
+            $sql = "INSERT INTO " . MHS . " (nim, nama, alamat) VALUES ('$nim', '$nama', '$alamat')";
+            $res = mysqli_query($cnn, $sql);
+            if ($res) {
+                echo "<script>document.location.href='$root';</script>";
+            } else {
+                echo 'Gagal menambah data: ' . mysqli_error($cnn);
+            }
+        } else {
+            // Jika ada ID → UPDATE
+            $sql = "UPDATE " . MHS . " SET nama='$nama', alamat='$alamat' WHERE nim='$id'";
+            $res = mysqli_query($cnn, $sql);
+            if ($res) {
+                echo "<script>document.location.href='$root';</script>";
+            } else {
+                echo 'Gagal memodifikasi data: ' . mysqli_error($cnn);
+            }
+        }
+    }
+
+    // Menyiapkan data untuk form
+    if ($view) {
+        if ($id) {
+            $sql = "SELECT nim, nama, alamat FROM " . MHS . " WHERE nim='$id'";
+            $res = mysqli_query($cnn, $sql);
+            if ($res && mysqli_num_rows($res)) {
+                $row = mysqli_fetch_assoc($res);
+                $nim = $row['nim'];
+                $nama = $row['nama'];
+                $alamat = $row['alamat'];
+            } else {
+                show_admin_data();
+                return;
+            }
+        } else {
+            $nim = @$_POST['nim'];
+            $nama = @$_POST['nama'];
+            $alamat = @$_POST['alamat'];
+        }
+        ?>
+
+        <h2><?php echo ($id ? 'Edit' : 'Tambah'); ?> Data</h2>
+        <form action="" method="post">
+            <table border="1" cellpadding="4" cellspacing="0">
+                <tr>
+                    <td width="100">NIM*</td>
+                    <td>
+                        <input type="text" name="nim" size="10" value="<?php echo $nim; ?>" <?php echo ($id ? 'readonly' : ''); ?> />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Nama</td>
+                    <td>
+                        <input type="text" name="nama" size="40" value="<?php echo $nama; ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Alamat</td>
+                    <td>
+                        <input type="text" name="alamat" size="60" value="<?php echo $alamat; ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" name="submit" value="Simpan" />
+                        <input type="button" value="Batal" onclick="window.location='<?php echo $root; ?>';" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br />
+        <p>Keterangan: * Harus diisi</p>
+
+        <?php
+    }
+
+    return false;
+}
