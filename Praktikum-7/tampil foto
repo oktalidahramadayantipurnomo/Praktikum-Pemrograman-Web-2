@@ -1,0 +1,40 @@
+<?php
+include('koneksi.php');
+
+$perintah = "SELECT * FROM namasiswa ORDER BY id DESC";
+$query = mysqli_query($koneksi, $perintah);
+?>
+
+<html>
+<head>
+    <title>Halaman Tampil Foto</title>
+</head>
+<body>
+<table width="500" border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th colspan="4">MENAMPILKAN FOTO / <a href="input_foto.php">TAMBAH DATA</a></th>
+    </tr>
+    <tr>
+        <td>NO</td>
+        <td>NAMA</td>
+        <td>FOTO</td>
+        <td>DELETE</td>
+    </tr>
+
+    <?php
+    while ($data = mysqli_fetch_assoc($query)) {
+    ?>
+    <tr>
+        <td><?php echo $data['id']; ?></td>
+        <td><?php echo htmlspecialchars($data['nama']); ?></td>
+        <td align="center">
+            <img src="gambar/<?php echo $data['foto']; ?>" width="60" height="80">
+        </td>
+        <td>
+            <a href="delete.php?del=<?php echo $data['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')">DELETE</a>
+        </td>
+    </tr>
+    <?php } ?>
+</table>
+</body>
+</html>
