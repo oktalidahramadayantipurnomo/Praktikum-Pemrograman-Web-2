@@ -1,0 +1,50 @@
+<?php
+include('koneksi.php');
+
+$nama = $_POST['nama'];
+
+if (empty($nama)) {
+    echo "Nama masih kosong";
+    exit;
+}
+
+$file       = $_FILES['foto']['name'];
+$tmp_dir    = $_FILES['foto']['tmp_name'];
+$ukuran     = $_FILES['foto']['size'];
+
+$direktori  = "gambar/";
+
+$ektensi    = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+$valid_ext  = array('jpeg','jpg','png','gif');
+
+$nama_gambar = rand(1000, 1000000) . "." . $ektensi;
+
+if (!in_array($ektensi, $valid_ext)) {
+    echo "Format file tidak didukung!<br><a href='input_foto.php'>Kembali</a>";
+    exit;
+}
+
+if ($ukuran > 1000000) {
+    echo "Ukuran gambar terlalu besar! (max 1MB)<br><a href='input_foto.php'>Kembali</a>";
+    exit;
+}
+
+if (move_uploaded_file($tmp_dir, $direktori . $nama_gambar)) {
+
+    $sql = "INSERT INTO namasiswa (nama, foto) VALUES (?, ?)";
+    $stmt = mysqli_prepare($koneksi, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $nama, $nama_gambar);
+
+    if (mysqli_stmt_execute($stmt)) {
+        echo "Berhasil disimpan<br>";
+        echo "Nama: $nama <br>";
+        echo "<img src='$direktori$nama_gambar' height='200'><br>";
+        echo "<a href='tampil_foto.php'>Lihat Halaman Berikutnya</a>";
+    } else {
+        echo "Gagal menyimpan: " . mysqli_error($koneksi);
+    }
+
+} else {
+    echo "Gagal mengupload gambar!";
+}
+?>
