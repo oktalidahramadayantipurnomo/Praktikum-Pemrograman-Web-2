@@ -52,7 +52,6 @@ include "pagination.php";
             margin-top: 80px;
         }
 
-        /* ================= CONTAINER ================= */
         .container {
             width: 90%;
             max-width: 1100px;
