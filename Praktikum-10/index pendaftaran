@@ -1,6 +1,6 @@
 <?php
 include "protect.php";
-include "pagination.php"; // sudah ada $data, $halaman, $total_halaman
+include "pagination.php"; 
 ?>
 
 <!DOCTYPE html>
