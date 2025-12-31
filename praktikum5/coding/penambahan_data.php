@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Tambah Data</title>
+</head>
+<body>
+
+<h2>Tambah Data Mahasiswa</h2>
+
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?act=add" method="post">
+<table>
+	<tr>
+		<td>NIM</td>
+		<td><input type="text" name="nim" required /></td>
+	</tr>
+	<tr>
+		<td>Nama</td>
+		<td><input type="text" name="nama" size="40" required /></td>
+	</tr>
+	<tr>
+		<td>Alamat</td>
+		<td><input type="text" name="alamat" size="60" /></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			<input type="submit" name="submit" value="Simpan" />
+			<input type="button" value="Batal" onclick="window.location.href='index.php';" />
+		</td>
+	</tr>
+</table>
+</form>
+
+<?php
+require_once './koneksi.php';
+
+// Jika form disubmit dan field NIM serta Nama diisi
+if (isset($_POST['nim']) && isset($_POST['nama'])) {
+	$nim = mysqli_real_escape_string($cnn, $_POST['nim']);
+	$nama = mysqli_real_escape_string($cnn, $_POST['nama']);
+	$alamat = mysqli_real_escape_string($cnn, $_POST['alamat']);
+
+	// Tambahkan data baru ke tabel mahasiswa
+	$sql = "INSERT INTO mahasiswa (nim, nama, alamat) VALUES ('$nim', '$nama', '$alamat')";
+	$res = mysqli_query($cnn, $sql);
+
+	if ($res) {
+		echo '<p>✅ Data Berhasil Ditambahkan.</p>';
+		echo '<a href="index.php">Kembali ke Daftar Data</a>';
+	} else {
+		echo '<p>❌ Gagal Menambah Data.</p>';
+		echo '<p>Error: ' . mysqli_error($cnn) . '</p>';
+	}
+}
+
+echo '<hr />';
+
+// Opsional: tampilkan hasil data terbaru
+if (file_exists('./seleksi_pengambilan_data.php')) {
+	require_once './seleksi_pengambilan_data.php';
+}
+?>
+</body>
+</html>
