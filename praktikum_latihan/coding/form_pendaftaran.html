@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Pendaftaran</title>
+
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f2f2f2;
+        }
+     
+        .container {
+            background: white;
+            width: 350px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease;
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px auto;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: 0.3s;
+            box-sizing: border-box;
+            display: block;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 8px rgba(74,144,226,0.4);
+        }
+
+        .btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        input[type="submit"] {
+            width: 90%;
+            padding: 12px;
+            margin: 20px auto 0 auto;
+            background: #4a90e2;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background: #357acb;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <h2>Tambah Data Pendaftaran</h2>
+
+        <form action="proses_pendaftaran.php" method="POST" enctype="multipart/form-data">
+
+            <label>Nama Lengkap:</label>
+            <input type="text" name="nama_lengkap" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" required>
+
+            <label>Tanggal Lahir:</label>
+            <input type="date" id="tanggal_lahir" name="tanggal_lahir" required>
+
+            <label>Alamat:</label>
+            <input type="text" name="alamat" required>
+
+            <label>Program yang Dipilih:</label>
+            <select name="program_dipilih" required>
+                <option value="">-- Pilih Program --</option>
+                <option value="AKL">Akuntansi Keuangan dan Lembaga</option>
+                <option value="OTKP">Otomatisasi Perkantoran</option>
+                <option value="TKJ">Teknik Komputer dan Jaringan</option>
+                <option value="BDP">Bisnis Daring dan Pemasaran</option>
+                <option value="RPL">Rekayasa Perangkat Lunak</option>
+            </select>
+
+            <!-- Input Foto Baru -->
+            <label>Upload Foto:</label>
+            <input type="file" name="foto" accept="image/*" required>
+
+            <div class="btn-wrapper">
+                <input type="submit" value="Daftar">
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>
