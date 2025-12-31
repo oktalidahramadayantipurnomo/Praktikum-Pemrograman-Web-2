@@ -1,0 +1,233 @@
+<?php
+include "protect.php";
+include "pagination.php"; // sudah ada $data, $halaman, $total_halaman
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Pendaftar</title>
+
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            width: 97%;
+            height: 55px;
+            background: #4a90e2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #e94545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .logout-btn:hover { background: #d13030; }
+
+        .page-content {
+            margin-top: 80px;
+        }
+
+        /* ================= CONTAINER ================= */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            background: white;
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .top-btn {
+            display: inline-block;
+            padding: 10px 14px;
+            background: #4a90e2;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px 5px 15px 0;
+            font-size: 15px;
+        }
+        .top-btn:hover { opacity: 0.85; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #4a90e2;
+            color: white;
+            padding: 12px;
+            font-size: 17px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            color: #444;
+        }
+
+        tr:nth-child(even) { background: #f7f9fc; }
+        tr:hover { background: #e9f1fb; }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            color: white;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .edit-btn { background: #ffb01f; }
+        .edit-btn:hover { background: #e29a12; }
+
+        .hapus-btn { background: #e94545; }
+        .hapus-btn:hover { background: #d13030; }
+
+        .foto-profil {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #4a90e2;
+            color: white;
+            border-radius: 5px;
+            margin: 2px;
+            text-decoration: none;
+        }
+
+        .pagination .active {
+            background: #2b6fbd;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-title">Pendaftaran Siswa</div>
+    <a href="logout.php" class="logout-btn">Logout</a>
+</div>
+
+<div class="page-content">
+<div class="container">
+
+    <h2>DATA PENDAFTARAN</h2>
+
+    <a href="tambah_data.php" class="top-btn">+ Tambah Data</a>
+
+    <table>
+        <tr>
+            <th>No</th>
+            <th>Nama Lengkap</th>
+            <th>Email</th>
+            <th>Tanggal Lahir</th>
+            <th>Alamat</th>
+            <th>Program</th>
+            <th>Foto</th>
+            <th>Aksi</th>
+        </tr>
+
+        <?php 
+        $no = $offset + 1;
+        while ($row = mysqli_fetch_assoc($data)) { 
+        ?>
+        <tr>
+            <td><?= $no++; ?></td>
+            <td><?= $row['nama_lengkap']; ?></td>
+            <td><?= $row['email']; ?></td>
+            <td><?= $row['tanggal_lahir']; ?></td>
+            <td><?= $row['alamat']; ?></td>
+            <td><?= $row['program_dipilih']; ?></td>
+
+            <td>
+                <?php if (!empty($row['foto'])) { ?>
+                    <img src="uploads/<?= $row['foto']; ?>" class="foto-profil">
+                <?php } else { ?>
+                    <span style="color:#888;">Tidak ada foto</span>
+                <?php } ?>
+            </td>
+
+            <td>
+                <a class="btn edit-btn" href="edit_data.php?id=<?= $row['id']; ?>">Edit</a>
+                <a class="btn hapus-btn" href="hapus_data.php?id=<?= $row['id']; ?>"
+                   onclick="return confirm('Hapus data ini?');">Hapus</a>
+            </td>
+        </tr>
+        <?php } ?>
+
+    </table>
+
+    <div class="pagination">
+
+        <?php if ($halaman > 1): ?>
+            <a href="?halaman=<?= $halaman - 1 ?>">Prev</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_halaman; $i++): ?>
+            <a href="?halaman=<?= $i ?>" class="<?= ($halaman == $i ? 'active' : '') ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+
+        <?php if ($halaman < $total_halaman): ?>
+            <a href="?halaman=<?= $halaman + 1 ?>">Next</a>
+        <?php endif; ?>
+
+    </div>
+
+</div>
+</div>
+
+</body>
+</html>
