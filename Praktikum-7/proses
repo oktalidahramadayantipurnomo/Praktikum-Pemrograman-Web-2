@@ -1,10 +1,73 @@
 <?php
 include('koneksi.php');
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Proses Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: #ffffff;
+            padding: 25px 30px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .success {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #c62828;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        img {
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            background-color: #4a90e2;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        a:hover {
+            background-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+<?php
 
 $nama = $_POST['nama'];
 
 if (empty($nama)) {
-    echo "Nama masih kosong";
+    echo "<div class='error'>Nama masih kosong</div>";
+    echo "<a href='input_foto.php'>Kembali</a>";
     exit;
 }
 
@@ -20,12 +83,14 @@ $valid_ext  = array('jpeg','jpg','png','gif');
 $nama_gambar = rand(1000, 1000000) . "." . $ektensi;
 
 if (!in_array($ektensi, $valid_ext)) {
-    echo "Format file tidak didukung!<br><a href='input_foto.php'>Kembali</a>";
+    echo "<div class='error'>Format file tidak didukung!</div>";
+    echo "<a href='input_foto.php'>Kembali</a>";
     exit;
 }
 
 if ($ukuran > 1000000) {
-    echo "Ukuran gambar terlalu besar! (max 1MB)<br><a href='input_foto.php'>Kembali</a>";
+    echo "<div class='error'>Ukuran gambar terlalu besar! (max 1MB)</div>";
+    echo "<a href='input_foto.php'>Kembali</a>";
     exit;
 }
 
@@ -36,15 +101,22 @@ if (move_uploaded_file($tmp_dir, $direktori . $nama_gambar)) {
     mysqli_stmt_bind_param($stmt, "ss", $nama, $nama_gambar);
 
     if (mysqli_stmt_execute($stmt)) {
-        echo "Berhasil disimpan<br>";
-        echo "Nama: $nama <br>";
+        echo "<div class='success'>Berhasil disimpan</div>";
+        echo "<p>Nama: <strong>$nama</strong></p>";
         echo "<img src='$direktori$nama_gambar' height='200'><br>";
         echo "<a href='tampil_foto.php'>Lihat Halaman Berikutnya</a>";
     } else {
-        echo "Gagal menyimpan: " . mysqli_error($koneksi);
+        echo "<div class='error'>Gagal menyimpan data</div>";
+        echo "<a href='input_foto.php'>Kembali</a>";
     }
 
 } else {
-    echo "Gagal mengupload gambar!";
+    echo "<div class='error'>Gagal mengupload gambar!</div>";
+    echo "<a href='input_foto.php'>Kembali</a>";
 }
+
 ?>
+</div>
+
+</body>
+</html>
